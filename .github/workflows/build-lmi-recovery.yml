@@ -196,15 +196,6 @@ jobs:
             echo 'TW_NO_HAPTICS := true' >> device/xiaomi/lmi/BoardConfig.mk
           sed -i 's/^TW_SUPPORT_INPUT_1_2_HAPTICS := true/TW_SUPPORT_INPUT_1_2_HAPTICS := false/' device/xiaomi/lmi/BoardConfig.mk
 
-          # 不允许息屏（否则点按被当成唤醒，界面像“卡死”）
-          grep -q 'TW_NO_SCREEN_BLANK := true' device/xiaomi/lmi/BoardConfig.mk || \
-            echo 'TW_NO_SCREEN_BLANK := true' >> device/xiaomi/lmi/BoardConfig.mk
-
-          # 锁屏自动解锁（不依赖滑动手势）
-          THEME=bootable/recovery/gui/theme/portrait_hdpi/pages/anywhere.xml
-          grep -q 'OF_AUTO_UNLOCK' "$THEME" || sed -i '/<page name="lock">/a\            <!-- OF_AUTO_UNLOCK -->\n            <action><action function="overlay"/></action>' "$THEME"
-          grep -q 'OF_AUTO_UNLOCK' "$THEME"
-
           # 加密自动检测
           sed -i 's/TW_USE_FSCRYPT_POLICY := 1/TW_USE_FSCRYPT_POLICY := 0/' device/xiaomi/lmi/BoardConfig.mk
 
