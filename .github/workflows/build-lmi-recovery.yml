@@ -152,8 +152,9 @@ jobs:
           echo 'PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE := false' >> device/xiaomi/lmi/device.mk
           grep -q 'PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE := false' device/xiaomi/lmi/device.mk
 
-          # fox_16.0 废弃 FOX_VERSION，改用纯数字的 FOX_MAINTAINER_PATCH_VERSION
-          sed -i 's/export FOX_VERSION="R11.1_3"/export FOX_MAINTAINER_PATCH_VERSION="3"/' device/xiaomi/lmi/vendorsetup.sh
+          # fox_16.0 废弃 FOX_VERSION，改用纯数字的 FOX_MAINTAINER_PATCH_VERSION（新树写的是 R12.1）
+          sed -i -E 's/^([[:space:]]*export[[:space:]]+)FOX_VERSION=.*/\1FOX_MAINTAINER_PATCH_VERSION="3"/' device/xiaomi/lmi/vendorsetup.sh
+          ! grep -q 'export FOX_VERSION=' device/xiaomi/lmi/vendorsetup.sh
 
           # fox_16.0 废弃变量批量改名
           find device/xiaomi/lmi -type f \( -name '*.sh' -o -name '*.mk' \) -exec sed -i \
@@ -194,6 +195,10 @@ jobs:
           grep -q 'TW_NO_HAPTICS := true' device/xiaomi/lmi/BoardConfig.mk || \
             echo 'TW_NO_HAPTICS := true' >> device/xiaomi/lmi/BoardConfig.mk
           sed -i 's/^TW_SUPPORT_INPUT_1_2_HAPTICS := true/TW_SUPPORT_INPUT_1_2_HAPTICS := false/' device/xiaomi/lmi/BoardConfig.mk
+
+          # 不允许息屏（否则点按被当成唤醒，界面像“卡死”）
+          grep -q 'TW_NO_SCREEN_BLANK := true' device/xiaomi/lmi/BoardConfig.mk || \
+            echo 'TW_NO_SCREEN_BLANK := true' >> device/xiaomi/lmi/BoardConfig.mk
 
           # 加密自动检测
           sed -i 's/TW_USE_FSCRYPT_POLICY := 1/TW_USE_FSCRYPT_POLICY := 0/' device/xiaomi/lmi/BoardConfig.mk
