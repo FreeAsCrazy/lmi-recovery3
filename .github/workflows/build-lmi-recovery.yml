@@ -196,6 +196,10 @@ jobs:
             echo 'TW_NO_HAPTICS := true' >> device/xiaomi/lmi/BoardConfig.mk
           sed -i 's/^TW_SUPPORT_INPUT_1_2_HAPTICS := true/TW_SUPPORT_INPUT_1_2_HAPTICS := false/' device/xiaomi/lmi/BoardConfig.mk
 
+          # MTP 在这台机器上起不来，事件循环每秒超时并拖慢 UI，直接不编译
+          grep -q 'TW_EXCLUDE_MTP := true' device/xiaomi/lmi/BoardConfig.mk || \
+            echo 'TW_EXCLUDE_MTP := true' >> device/xiaomi/lmi/BoardConfig.mk
+
           # 加密自动检测
           sed -i 's/TW_USE_FSCRYPT_POLICY := 1/TW_USE_FSCRYPT_POLICY := 0/' device/xiaomi/lmi/BoardConfig.mk
 
